@@ -1,5 +1,9 @@
 const userModel = require('../models/userModel')
 const bcrypt = require ('bcrypt')
+const jwt = require('jsonwebtoken')
+
+require ('dotenv').config()
+const jwt_secret = process.env.JWT_SECRET
 
 module.exports.signupUser = async (req,res) => {
     const {name,email,password} = req.body 
@@ -53,7 +57,9 @@ module.exports.loginUser = async (req,res) =>{
             bcrypt.compare(password,savedUser.password)
             .then(doMatch => {
                 if(doMatch){
-                    res.json({message: "Successfully Signed In"})
+                    const token = jwt.sign({_id:savedUser._id},jwt_secret)
+                    res.json({message: "Successfully Signed In",token})
+                    
                 }
                 else{
                     res.status(422).json({
