@@ -1,42 +1,55 @@
-import * as React from 'react';
+import {React, useState} from 'react';
+import { Link,useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import M from 'materialize-css'
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const theme = createTheme();
 
-export default function SignInSide() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
+const Login = () => {
+  const navigate = useNavigate()
+  const [password,setPassword] = useState("");
+  const [email,setEmail] = useState("");
+  const baseUrl = "http://localhost:5000"
+    const PostData =() =>{
+        if(!/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)){
+            M.toast({html: "invalid email",classes:"#c62828 red darken-3"})
+            return
+        }
+        fetch(`${baseUrl}/login`,{
+            method:"post",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                password,
+                email
+            })
+        }).then(res=>res.json())
+        .then(data=>{
+            console.log(data)
+           if(data.error){
+              M.toast({html: data.error,classes:"#c62828 red darken-3"})
+           }
+           else{
+                localStorage.setItem('jwt',data.token);
+                localStorage.setItem('user',JSON.stringify(data.user));
+                M.toast({html:"Login Successful!",classes:"#43a047 green darken-1"})
+                navigate('/home')
+           }
+        }).catch(err=>{
+            console.log(err)
+        })
+      }
 
   return (
     <ThemeProvider theme={theme}>
@@ -72,42 +85,40 @@ export default function SignInSide() {
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <Box sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
                 required
                 fullWidth
-                id="email"
                 label="Email Address"
-                name="email"
                 autoComplete="email"
                 autoFocus
+                value={email}
+                onChange={(e)=>setEmail(e.target.value)}
               />
               <TextField
                 margin="normal"
                 required
                 fullWidth
-                name="password"
                 label="Password"
                 type="password"
-                id="password"
+                value={password}
                 autoComplete="current-password"
+                onChange={(e)=>setPassword(e.target.value)}
               />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              />
+              
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                onClick = {() => PostData()}
               >
                 Sign In
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href="#" variant="body2">
+                  <Link to="#" variant="body2">
                     Forgot password?
                   </Link>
                 </Grid>
@@ -117,7 +128,6 @@ export default function SignInSide() {
                   </Link>
                 </Grid>
               </Grid>
-              <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>
         </Grid>
@@ -125,3 +135,5 @@ export default function SignInSide() {
     </ThemeProvider>
   );
 }
+
+export default Login
