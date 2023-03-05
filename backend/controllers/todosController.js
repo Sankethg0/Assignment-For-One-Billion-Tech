@@ -20,3 +20,13 @@ module.exports.saveTodo = async (req,res) => {
     })
     
 }
+
+module.exports.getTodosByUser = async (req,res) => {
+    try{
+        const todos = await todoModel.find({postedBy: req.params.userId})
+        res.json(todos)
+    }catch (error) {
+        console.erroro(error)
+        res.status(500).json({ message: 'Server Error' })
+    }
+}
