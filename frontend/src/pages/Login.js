@@ -1,4 +1,4 @@
-import {React, useState} from 'react';
+import {React, useState,useContext} from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -11,11 +11,13 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import M from 'materialize-css'
+import {userContext} from '../App'
 
 
 const theme = createTheme();
 
 const Login = () => {
+  const {state,dispatch} = useContext(userContext);
   const navigate = useNavigate()
   const [password,setPassword] = useState("");
   const [email,setEmail] = useState("");
@@ -42,9 +44,10 @@ const Login = () => {
            }
            else{
                 localStorage.setItem('jwt',data.token);
-                localStorage.setItem('user',JSON.stringify(data.user));
+                localStorage.setItem('user',JSON.stringify(data.user))
+                dispatch({type:'USER',payload:data.user})
                 M.toast({html:"Login Successful!",classes:"#43a047 green darken-1"})
-                navigate('/home')
+                navigate('/home/user')
            }
         }).catch(err=>{
             console.log(err)
