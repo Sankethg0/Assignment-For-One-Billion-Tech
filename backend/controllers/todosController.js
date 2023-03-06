@@ -33,19 +33,18 @@ module.exports.getTodosCurrentUser = async (req,res) => {
 }
 
 module.exports.deleteTodo = async (req,res) =>{
-    todoModel.findOne({_id:req.param.todosId})
-    .populate("postedBy","_id")
-    .exec((err,post) => {
-        if(err || post) {
-            return res.status(422).json({error:err})
-        }
-        if(post.postedBy._id.toString() === req.user._id.toString()){
-            post.remove()
-            .then(result => {
-                res.json(result)
-            }).catch(err => {
-                console.log(err)
-            })
-        }
-    })
+    const userId = req.user.id;
+    const todoId = req.params.id;
+
+  try {
+    const todo = await todoModel.findOneAndDelete({ _id: todoId, postedBy: userId });
+    if (!todo) {
+      return res.status(404).json({ message: 'Todo not found' });
+    }
+    res.status(200).json({ message: 'Todo deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+
 }

@@ -13,7 +13,7 @@ router.post('/signup',signupUser)
 router.post('/login',loginUser)
 router.post('/saveTodo',userAuth,saveTodo)
 router.get('/home',userAuth,getTodosCurrentUser)
-router.post('/deletepost/:todosId',userAuth,deleteTodo)
+router.post('/deleteTodo/:Id',userAuth,deleteTodo)
 
 
 module.exports = router

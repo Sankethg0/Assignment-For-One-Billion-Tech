@@ -17,7 +17,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import ListIcon from '@mui/icons-material/List';
-import M from 'materialize-css'
+import {getTodoByCurrentUser,createTodo, deleteTodo} from '../utils/HandleApi'
 
 
 const drawerWidth = 240;
@@ -32,57 +32,9 @@ const Home = () => {
   const baseUrl = "http://localhost:5000"
 
   useEffect(() => {
-    fetch(`${baseUrl}/home`,{
-      headers:{
-          "Authorization":"Bearer "+localStorage.getItem("jwt")
-      }
-  }).then(res=>res.json())
-  .then(result=>{
-      console.log(result)
-      setTodos(result.mypost)
-  })
+    getTodoByCurrentUser(setTodos)
   }, [])
 
-  const saveTodo = () => {
-    fetch(`${baseUrl}/saveTodo`,{
-      method: 'post',
-      headers:{
-        "Content-Type":"application/json",
-        "Authorization":"Bearer "+localStorage.getItem("jwt")
-      },
-      body:JSON.stringify({
-        text
-    })
-    }).then(res=>res.json())
-    .then(data=>{
-        
-       if(data.error){
-          M.toast({html: data.error,classes:"#c62828 red darken-3"})
-       }
-       else{
-           M.toast({html:"Item Created Successfully!",classes:"#43a047 green darken-1"})
-       }
-    }).catch(err=>{
-      console.log(err)
-  })
-  }
-
-  const deleteTodo = (todosId) => {
-    fetch(`${baseUrl}/deletepost/${todosId}`, {
-      method:"delete",
-            headers:{
-                Authorization:"Bearer "+localStorage.getItem("jwt")
-            }
-    })
-    .then( res => res.json())
-    .then( result => {
-      console.log(result)
-      const newTodos = todos.filter(todo => {
-        return todo._id !== result._id
-      })
-      setTodos(newTodos)
-    })
-  }
 
   
   return (
@@ -158,13 +110,13 @@ const Home = () => {
           onChange={(e) => setText(e.target.value)}
           />
 
-          <div className="add" onClick={() => saveTodo()}> Add </div>
+        <div className="add" onClick={() => createTodo(text,setText,setTodos)}> Add </div>
         </div>
         <div className="list">
           {todos.map((todo) => <ToDo 
           key={todo._id} 
           text={todo.text} 
-          deleteTodo = {() => deleteTodo(todo._id,setTodos)}
+          deleteTodo = {() => deleteTodo(todo._id,setTodos,todos)}
           />)}
           
         </div>
