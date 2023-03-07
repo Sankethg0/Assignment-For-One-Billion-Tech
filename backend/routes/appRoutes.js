@@ -1,6 +1,6 @@
 const {Router} = require('express')
 const {signupUser,loginUser} = require('../controllers/userController')
-const {saveTodo,getTodosCurrentUser,deleteTodo} = require('../controllers/todosController')
+const {saveTodo,getTodosCurrentUser,deleteTodo, updateTodo} = require('../controllers/todosController')
 const userAuth = require('../middleware/auth')
 
 const router = Router()
@@ -13,7 +13,8 @@ router.post('/signup',signupUser)
 router.post('/login',loginUser)
 router.post('/saveTodo',userAuth,saveTodo)
 router.get('/home',userAuth,getTodosCurrentUser)
-router.post('/deleteTodo/:Id',userAuth,deleteTodo)
+router.delete('/deleteTodo/:Id',userAuth,deleteTodo)
+router.put('/updateTodo/:id',userAuth,updateTodo)
 
 
 module.exports = router

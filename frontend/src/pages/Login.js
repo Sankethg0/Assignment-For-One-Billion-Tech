@@ -47,6 +47,7 @@ const Login = () => {
                 localStorage.setItem('user',JSON.stringify(data.user))
                 dispatch({type:'USER',payload:data.user})
                 M.toast({html:"Login Successful!",classes:"#43a047 green darken-1"})
+                console.log(data)
                 navigate('/home/user')
            }
         }).catch(err=>{

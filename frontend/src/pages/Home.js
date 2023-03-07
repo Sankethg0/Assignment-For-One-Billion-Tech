@@ -17,7 +17,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import ListIcon from '@mui/icons-material/List';
-import {getTodoByCurrentUser,createTodo, deleteTodo} from '../utils/HandleApi'
+import {getTodoByCurrentUser,createTodo, deleteTodo, updateTodo} from '../utils/HandleApi'
 
 
 const drawerWidth = 240;
@@ -28,13 +28,18 @@ const Home = () => {
   const navigate = useNavigate()
   const [todos, setTodos] = useState([])
   const [text,setText] = useState([])
+  const [isUpdating, setIsUpdating] = useState(false)
+  const [toDoId, setToDoId] = useState('')
   const {state,dispatch} = useContext(userContext)
-  const baseUrl = "http://localhost:5000"
 
   useEffect(() => {
     getTodoByCurrentUser(setTodos)
   }, [])
-
+  const updateMode = (_id,text) => {
+    setIsUpdating(true)
+    setText('')
+    setToDoId(_id)
+  }
 
   
   return (
@@ -110,13 +115,15 @@ const Home = () => {
           onChange={(e) => setText(e.target.value)}
           />
 
-        <div className="add" onClick={() => createTodo(text,setText,setTodos)}> Add </div>
+        <div className="add" onClick={isUpdating ? () => updateTodo(toDoId, text, setTodos, setText, setIsUpdating) : () => createTodo(text,setText,setTodos)}>{isUpdating ? "Update" : "Add" }</div>
         </div>
         <div className="list">
           {todos.map((todo) => <ToDo 
           key={todo._id} 
           text={todo.text} 
+          updateMode = {() => updateMode(todo._id, todo.text)}
           deleteTodo = {() => deleteTodo(todo._id,setTodos,todos)}
+          upd
           />)}
           
         </div>

@@ -33,11 +33,10 @@ module.exports.getTodosCurrentUser = async (req,res) => {
 }
 
 module.exports.deleteTodo = async (req,res) =>{
-    const userId = req.user.id;
-    const todoId = req.params.id;
+    const todoId = req.params.Id;
 
   try {
-    const todo = await todoModel.findOneAndDelete({ _id: todoId, postedBy: userId });
+    const todo = await todoModel.findOneAndDelete({ _id: todoId });
     if (!todo) {
       return res.status(404).json({ message: 'Todo not found' });
     }
@@ -48,3 +47,24 @@ module.exports.deleteTodo = async (req,res) =>{
   }
 
 }
+
+module.exports.updateTodo = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { text } = req.body;
+    
+        const updatedTodo = await todoModel.findByIdAndUpdate(
+          id,
+          { text },
+          { new: true }
+        );
+    
+        if (!updatedTodo) {
+          return res.status(404).json({ error: 'Todo not found' });
+        }
+    
+        res.json(updatedTodo);
+      } catch (error) {
+        console.log(error)
+      }
+  };

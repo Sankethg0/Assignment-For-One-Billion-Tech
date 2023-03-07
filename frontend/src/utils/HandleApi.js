@@ -2,6 +2,7 @@ import M from 'materialize-css'
 const baseUrl = "http://localhost:5000"
 
 
+
 const getTodoByCurrentUser = (setTodos) => {
     fetch(`${baseUrl}/home`,{
         headers:{
@@ -42,18 +43,49 @@ const createTodo = (text, setText, setTodos) => {
 }
 
 const deleteTodo = async (todosId, setTodos, todos) =>{
-    fetch(`${baseUrl}/deleteTodo/${todosId}`, {
-      method: 'DELETE',
-      headers: { "Authorization" : "Bearer "+localStorage.getItem("jwt"),
-                "Content-Type":"application/json", },
-    }).then(res => res.json())
-    .then(result => {
-        console.log(result)
-        const newTodos = todos.filter(setTodos => {
-            return setTodos._id !== result._id
-        })
-        getTodoByCurrentUser(newTodos)
-    })
+    try {
+        const response = await fetch(`${baseUrl}/deleteTodo/${todosId}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        const result = await response.json();
+        console.log(result);
+        if (response.ok) {
+          const newTodos = todos.filter((todo) => todo._id !== todosId);
+          setTodos(newTodos);
+        }
+      } catch (err) {
+        console.log(err);
+      }
 }
 
-export {getTodoByCurrentUser, createTodo, deleteTodo}
+const updateTodo = async (toDoId, text,setTodos,setText, setIsUpdating) => {
+  try {
+    const response = await fetch(`${baseUrl}/updateTodo/${toDoId}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: toDoId,
+        text: text,
+      }),
+    });
+    const result = await response.json();
+    console.log(result);
+    if (response.ok) {
+      
+      setIsUpdating(false);
+      setText('');
+      getTodoByCurrentUser(setTodos); 
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export {getTodoByCurrentUser, createTodo, deleteTodo, updateTodo}
