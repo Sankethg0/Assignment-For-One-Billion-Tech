@@ -17,10 +17,10 @@ import {userContext} from '../App'
 const theme = createTheme();
 
 const Login = () => {
-  const {state,dispatch} = useContext(userContext);
+  const {state,dispatch} = useContext(userContext)
   const navigate = useNavigate()
-  const [password,setPassword] = useState("");
-  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("")
+  const [email,setEmail] = useState("")
   const baseUrl = "http://localhost:5000"
     const PostData =() =>{
         if(!/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)){
@@ -47,7 +47,7 @@ const Login = () => {
                 localStorage.setItem('user',JSON.stringify(data.user))
                 dispatch({type:'USER',payload:data.user})
                 M.toast({html:"Login Successful!",classes:"#43a047 green darken-1"})
-                console.log(data)
+                console.log(data.user)
                 navigate('/home/user')
            }
         }).catch(err=>{
@@ -122,7 +122,7 @@ const Login = () => {
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link to="#" variant="body2">
+                  <Link to="/forgot-password" variant="body2">
                     Forgot password?
                   </Link>
                 </Grid>

@@ -4,6 +4,7 @@ import {initialState, reducer} from './reducers/userReducer'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Home from './pages/Home'
+import ForgotPassword from './pages/ForgotPassword'
 
 export const userContext =createContext()
 
@@ -23,6 +24,7 @@ const Routing = () =>{
     <Routes>
       <Route exact path='/' element={<Login />} />
       <Route path='/signup' element={<Signup />} />
+      <Route path='/forgot-password' element={<ForgotPassword />} />
       <Route path='/home/:userid' element={<Home />} />
     </Routes>
   )
@@ -36,8 +38,6 @@ function App() {
           <Routing/>
         </BrowserRouter>   
     </userContext.Provider>
-        
-      
   );
 }
 

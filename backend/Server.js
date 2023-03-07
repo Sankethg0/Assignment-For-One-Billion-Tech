@@ -11,6 +11,8 @@ const PORT = process.env.PORT || 5000
 app.use(express.json())
 app.use(cors())
 app.use(routes)
+app.set("view engine","ejs")
+app.use(express.urlencoded({ extended: true }));
 
 
 app.listen(PORT, () => console.log(`Listening on :${PORT}`))
