@@ -1,5 +1,5 @@
 const {Router} = require('express')
-const { signupUser, loginUser, forgotPassword, resetPassword, changePassword} = require('../controllers/userController')
+const { signupUser, loginUser, forgotPassword, resetPassword, changePassword ,getUser} = require('../controllers/userController')
 const { saveTodo, getTodosCurrentUser, deleteTodo, updateTodo} = require('../controllers/todosController')
 const userAuth = require('../middleware/auth')
 
@@ -18,6 +18,7 @@ router.put('/updateTodo/:id',userAuth,updateTodo)
 router.post('/forgot-password',forgotPassword)
 router.get('/reset-password/:id/:token',resetPassword)
 router.post('/reset-password/:id/:token',changePassword)
+
 
 
 module.exports = router
