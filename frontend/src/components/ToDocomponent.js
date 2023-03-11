@@ -36,7 +36,6 @@ function ToDocomponent() {
       text={todo.text} 
       updateMode = {() => updateMode(todo._id, todo.text)}
       deleteTodo = {() => deleteTodo(todo._id,setTodos,todos)}
-      upd
       />)}
       
     </div>
